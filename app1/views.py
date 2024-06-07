@@ -53,7 +53,7 @@ def employee_detail_view(request, id):
         return Response({"message": "Object Not Found"}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer =  EmployeeSerializer(employee)
+        serializer = EmployeeSerializer(employee)
         return Response(serializer.data)
 
     if request.method == 'PUT':
@@ -66,69 +66,26 @@ def employee_detail_view(request, id):
     elif request.method == 'DELETE':
         employee.delete()
         return Response({"message", f"{employee.name} object deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-
-# @api_view(["GET","PUT"])
-# @authentication_classes([SessionAuthentication, BasicAuthentication])
-# @permission_classes([IsAuthenticated])
-# def employee_list_view(request):
-#     try:
-#         employee = Employee.objects.all()
-#     except  Employee.DoesNotExist:
-#         return Response({"message":'object not found'}, status=status.HTTP_404_NOT_FOUND)
-
-#     if request.method == "GET":
-#         employee = Home.objects.all()
-#         serializer = HomeSerializer(homes, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
     
-#     elif request.method =="POST":
-#         serializer = HomeSerializer(homes, many=True)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #     return Response({"message":'home created successfully'},status=status.HTTP_200_OK)
-    
-    # return Response({"message":'errors'},status=status.HTTP_400_BAD_REQUEST)
-    # if method =="DELETE":
-    #     Home.objects.delete()
-    #     return Response({"message":'The home method is deleted successfully'},status=status.HTTP_200_OK)
-
-
-# @api_view(['GET', 'PUT', 'DELETE'])    
-# @authentication_classes([SessionAuthentication, BasicAuthentication])
-# @permission_classes([IsAuthenticated])
-# def home_detail_view(request,id):
-#     if request.method == "GET":
-#         homes = Home.objects.all()
-#         serializer = HomeSerializer(homes, many=True)
-#         return Response({"message":''},status=status.HTTP_404_NOT_FOUND)
-#     if request.method == "POST":
-#         serializer = HomeSerializer(homes, data=request.data)
-#         if serializer.is_valid():
-    #         serializer.save()
-    #     return Response({"message":'The post method is created successfully'}, status=status.HTTP_200_OK)
-    # if request.method =="DELETE":
-    #     homes.objects.delete()
-    #     return Response({"message":'The home method is deleted successfully'},status=status.HTTP_200_OK)
-
-
 # class based views 
 
 class EmployeeAPIView(APIView):  
 
- authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
- permission_classes = [IsAuthenticated] 
-def get(self, request):
+    authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
         employee = Employee.objects.all()
         serializer = EmployeeSerializer(employee, many=True)
         return Response({"data":serializer.data}, status=status.HTTP_200_OK)
 
        
        
-def post(self, request):
-    serializer = EmployeeSerializer(data=request.data)
-    data = request.data
-    employee_id = data["employee"]
-    if serializer.is_valid():
+    def post(self, request):
+        serializer = EmployeeSerializer(data=request.data)
+        data = request.data
+        employee_id = data["employee"]
+        if serializer.is_valid():
             employees = Employee.objects.get(id =employee_id)
             if not employees.is_employeed:
                 serializer.save()
@@ -138,9 +95,8 @@ def post(self, request):
                              status=status.HTTP_201_CREATED)
             else:
                 return Response({"message":"The employee is not availble for paid"},status=status.HTTP_200_OK)
-    else:
-
-        return Response({"message":serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message":serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EmployeeDetailsAPIView(APIView):
